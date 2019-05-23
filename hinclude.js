@@ -1,5 +1,5 @@
 /*
-hinclude.js -- HTML Includes (version 1.1.0)
+hinclude.js -- HTML Includes (version 1.2.0)
 
 Copyright (c) 2005-2012 Mark Nottingham <mnot@mnot.net>
 
@@ -42,7 +42,7 @@ var hinclude;
       if (req.readyState === 4) {
         if (req.status === 200 || req.status === 304) {
           element.innerHTML = req.responseText;
-          this.eval_js(element);
+          hinclude.eval_js(element);
         }
 
         hinclude.set_class(element, req.status);
@@ -68,7 +68,7 @@ var hinclude;
         include = hinclude.buffer.pop();
         if (include[1].status === 200 || include[1].status === 304) {
           include[0].innerHTML = include[1].responseText;
-          this.eval_js(include[0]);
+          hinclude.eval_js(include[0]);
         }
         hinclude.set_class(include[0], include[1].status);
         hinclude.trigger_event(include[0]);
@@ -212,12 +212,10 @@ var hinclude;
         }
         // for Internet Explorer
         /*@cc_on
-        document.write(
-          "<scr"
-            + "ipt id=__ie_onload defer src='//:'><\/scr"
-            + "ipt>"
-        );
-        var script = document.getElementById("__ie_onload");
+        var script = document.createElement('script');
+        script.id = '__ie_onload';
+        script.setAttribute("defer", "defer");
+        document.getElementsByTagName('head')[0].appendChild(script);
         script.onreadystatechange = function () {
           if (this.readyState === "complete") {
             init(); // call the onload handler

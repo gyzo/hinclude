@@ -1,0 +1,25 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/hinclude
+    environment:
+      PORT: 8080
+    docker:
+      - image: circleci/node:latest-browsers-legacy
+    steps:
+      - checkout
+      - run:
+          name: update-npm
+          command: 'sudo npm install -g npm'
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+      - run:
+          name: install-dependencies
+          command: npm install
+      - save_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+          paths:
+            - ./node_modules      
+      - run:
+          name: test
+          command: npm test
